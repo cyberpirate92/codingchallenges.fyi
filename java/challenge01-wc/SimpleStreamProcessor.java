@@ -8,12 +8,14 @@ import java.util.Set;
 
 public class SimpleStreamProcessor implements StreamProcessor {
 
-    private static final Set<Integer> WhitespaceCharacters = new HashSet<Integer>(List.of(9, 10, 11, 12, 13, 32 ));
+    // Values considered whitespace by wc
+    // Reference: https://en.cppreference.com/w/cpp/string/wide/iswspace
+    private static final Set<Integer> WhitespaceCharacters = new HashSet<>(List.of(9, 10, 11, 12, 13, 32 ));
 
     @Override
     public ProcessResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
         long lineCount = 0, wordCount = 0, characterCount = 0, byteCount = 0;
-        int currentByte = 0;
+        int currentByte;
         boolean inWord = false;
         var byteBuffer = new ByteArrayOutputStream();
 
