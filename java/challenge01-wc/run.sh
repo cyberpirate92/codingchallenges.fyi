@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm ../out/*.class
 echo ""
 echo "wc output"
