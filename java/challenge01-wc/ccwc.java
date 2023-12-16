@@ -1,17 +1,19 @@
 import java.io.*;
 import java.nio.file.Path;
 
+// line, word, byte, and file name
+
 class ccwc {
 	private static final char[] VALID_FLAGS = new char[] { 'l', 'w', 'm', 'c' };
 
 	public static void main(String[] args) throws IOException {
-		final StreamProcessor streamProcessor = new BufferedStreamProcessor();
+		final StreamProcessor streamProcessor = new SimpleStreamProcessor();
 		final var parseResult = CommandLineArgumentParser.parseArguments(args, VALID_FLAGS);
 		final var processingOptions = parseResult.flags().isEmpty() ?
 				new ProcessingOptions() :
 				new ProcessingOptions(
 					parseResult.flags().contains('l'), parseResult.flags().contains('w'),
-					parseResult.flags().contains('m'), parseResult.flags().contains('c')
+					parseResult.flags().contains('c'), parseResult.flags().contains('m')
 				);
 		final String currentWorkingDirectory = System.getProperty("user.dir");
 		final var files = parseResult.otherArguments().stream().map(filename -> {
@@ -69,6 +71,9 @@ class ccwc {
 		}
 		if (options.byteCount()) {
 			System.out.printf("%7d ", result.byteCount());
+		}
+		if (options.characterCount()) {
+			System.out.printf("%7d ", result.characterCount());
 		}
 		System.out.printf("%s\n", filename);
 	}
