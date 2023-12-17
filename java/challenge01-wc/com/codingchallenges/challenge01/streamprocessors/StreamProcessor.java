@@ -7,5 +7,5 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface StreamProcessor {
-    StreamProcessingResult processStream(InputStream stream, ProcessingOptions options) throws IOException;
+    StreamProcessingResult processStream(InputStream stream, ProcessingOptions options, String providedFilename) throws IOException;
 }

@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 public class SimpleStreamProcessor implements StreamProcessor {
     @Override
-    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
+    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options, String providedFilename) throws IOException {
         long lineCount = 0, wordCount = 0, characterCount = 0, byteCount = 0;
         int currentByte;
         boolean inWord = false;
@@ -43,6 +43,6 @@ public class SimpleStreamProcessor implements StreamProcessor {
         characterCount += StringUtils.getUTF8CharacterCount(byteBuffer.toByteArray());
         byteBuffer.close();
 
-        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount);
+        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount, providedFilename);
     }
 }

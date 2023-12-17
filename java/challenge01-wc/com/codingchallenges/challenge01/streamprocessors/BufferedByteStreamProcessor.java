@@ -11,7 +11,7 @@ import java.io.InputStream;
 public class BufferedByteStreamProcessor implements StreamProcessor {
 
     @Override
-    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
+    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options, String providedFilename) throws IOException {
         final int BUFFER_SIZE = 16384;
         var bufferedInputStream = new BufferedInputStream(stream, BUFFER_SIZE);
 
@@ -61,7 +61,7 @@ public class BufferedByteStreamProcessor implements StreamProcessor {
             wordCount += 1;
         }
 
-        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount);
+        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount, providedFilename == null? "" : providedFilename);
     }
 
     /**
