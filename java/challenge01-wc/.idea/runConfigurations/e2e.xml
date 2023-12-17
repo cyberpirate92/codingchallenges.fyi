@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="e2e" type="CompoundRunConfigurationType">
+    <toRun name="challenge01-wc" type="Application" />
+    <toRun name="Execute wc" type="ShConfigurationType" />
+    <toRun name="Show diff" type="ShConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

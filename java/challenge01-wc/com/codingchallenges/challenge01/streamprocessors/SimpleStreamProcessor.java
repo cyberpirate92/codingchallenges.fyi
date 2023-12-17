@@ -1,10 +1,16 @@
+package com.codingchallenges.challenge01.streamprocessors;
+
+import com.codingchallenges.challenge01.streamprocessors.models.StreamProcessingResult;
+import com.codingchallenges.challenge01.models.ProcessingOptions;
+import com.codingchallenges.challenge01.utils.StringUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class SimpleStreamProcessor implements StreamProcessor {
     @Override
-    public ProcessResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
+    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
         long lineCount = 0, wordCount = 0, characterCount = 0, byteCount = 0;
         int currentByte;
         boolean inWord = false;
@@ -37,6 +43,6 @@ public class SimpleStreamProcessor implements StreamProcessor {
         characterCount += StringUtils.getUTF8CharacterCount(byteBuffer.toByteArray());
         byteBuffer.close();
 
-        return new ProcessResult(lineCount, wordCount, byteCount, characterCount);
+        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount);
     }
 }

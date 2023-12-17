@@ -1,3 +1,11 @@
+package com.codingchallenges.challenge01;
+
+import com.codingchallenges.challenge01.streamprocessors.models.StreamProcessingResult;
+import com.codingchallenges.challenge01.models.ProcessingOptions;
+import com.codingchallenges.challenge01.streamprocessors.BufferedByteStreamProcessor;
+import com.codingchallenges.challenge01.streamprocessors.StreamProcessor;
+import com.codingchallenges.challenge01.utils.CommandLineArgumentParser;
+
 import java.io.*;
 import java.nio.file.Path;
 
@@ -5,7 +13,7 @@ class ccwc {
 	private static final char[] VALID_FLAGS = new char[] { 'l', 'w', 'm', 'c' };
 
 	public static void main(String[] args) throws IOException {
-		final StreamProcessor streamProcessor = new ByteBufferedStreamProcessor();
+		final StreamProcessor streamProcessor = new BufferedByteStreamProcessor();
 		final var parseResult = CommandLineArgumentParser.parseArguments(args, VALID_FLAGS);
 		final var processingOptions = parseResult.flags().isEmpty() ?
 				new ProcessingOptions() :
@@ -26,7 +34,7 @@ class ccwc {
 		}
 
 		long totalResults = 0;
-		ProcessResult cumulative = new ProcessResult();
+		StreamProcessingResult cumulative = new StreamProcessingResult();
 		for (int i=0; i<files.length; i++) {
 			String providedFilename = parseResult.otherArguments().get(i);
 			final var file = files[i];
@@ -45,7 +53,7 @@ class ccwc {
 			var fileStream = new FileInputStream(file);
 			var result = streamProcessor.processStream(fileStream, processingOptions);
 			printOutput(processingOptions, result, providedFilename);
-			cumulative = new ProcessResult(cumulative, result);
+			cumulative = new StreamProcessingResult(cumulative, result);
 			totalResults += 1;
 		}
 
@@ -55,11 +63,11 @@ class ccwc {
 	}
 
 
-	private static void printOutput(ProcessingOptions options, ProcessResult result) {
+	private static void printOutput(ProcessingOptions options, StreamProcessingResult result) {
 		printOutput(options, result, "");
 	}
 
-	private static void printOutput(ProcessingOptions options, ProcessResult result, String filename) {
+	private static void printOutput(ProcessingOptions options, StreamProcessingResult result, String filename) {
 		System.out.printf(" ");
 		if (options.lineCount()) {
 			System.out.printf("%7d ", result.lineCount());
@@ -77,6 +85,6 @@ class ccwc {
 	}
 
 	private static void printError(String filename, String errorMessage) {
-		System.out.printf("ccwc: %s: %s\n", filename, errorMessage);
+		System.out.printf("src.main.com.codingchallenges.challenge01.ccwc: %s: %s\n", filename, errorMessage);
 	}
 }

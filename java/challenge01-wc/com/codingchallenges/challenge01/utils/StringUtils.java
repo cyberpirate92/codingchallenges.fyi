@@ -1,3 +1,5 @@
+package com.codingchallenges.challenge01.utils;
+
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
