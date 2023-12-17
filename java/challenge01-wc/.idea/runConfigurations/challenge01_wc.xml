@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="challenge01-wc" type="Application" factoryName="Application">
+    <output_file path="$PROJECT_DIR$/logs/actual.log" is_save="true" />
+    <option name="MAIN_CLASS_NAME" value="com.codingchallenges.challenge01.ccwc" />
+    <module name="challenge01-wc" />
+    <option name="PROGRAM_PARAMETERS" value="test_data/test.txt test_data/test1.txt test_data/test2.txt test_data/test3.txt test_data/test4.txt" />
+    <method v="2" />
+  </configuration>
+</component>

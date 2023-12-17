@@ -1,3 +1,7 @@
+package com.codingchallenges.challenge01.utils;
+
+import com.codingchallenges.challenge01.models.ParseResult;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 

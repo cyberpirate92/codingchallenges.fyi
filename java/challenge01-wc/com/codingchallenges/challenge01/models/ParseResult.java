@@ -1,3 +1,5 @@
+package com.codingchallenges.challenge01.models;
+
 import java.util.Set;
 import java.util.List;
 

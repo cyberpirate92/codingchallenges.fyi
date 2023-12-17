@@ -1,11 +1,17 @@
+package com.codingchallenges.challenge01.streamprocessors;
+
+import com.codingchallenges.challenge01.streamprocessors.models.StreamProcessingResult;
+import com.codingchallenges.challenge01.models.ProcessingOptions;
+import com.codingchallenges.challenge01.utils.StringUtils;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ByteBufferedStreamProcessor implements StreamProcessor {
+public class BufferedByteStreamProcessor implements StreamProcessor {
 
     @Override
-    public ProcessResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
+    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
         final int BUFFER_SIZE = 16384;
         var bufferedInputStream = new BufferedInputStream(stream, BUFFER_SIZE);
 
@@ -55,7 +61,7 @@ public class ByteBufferedStreamProcessor implements StreamProcessor {
             wordCount += 1;
         }
 
-        return new ProcessResult(lineCount, wordCount, byteCount, characterCount);
+        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount);
     }
 
     /**

@@ -1,3 +1,5 @@
+package com.codingchallenges.challenge01;
+
 import java.io.*;
 
 public class Test {
