@@ -7,11 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SimpleStreamProcessor implements StreamProcessor {
-
-    // Values considered whitespace by wc
-    // Reference: https://en.cppreference.com/w/cpp/string/wide/iswspace
-    private static final Set<Integer> WhitespaceCharacters = new HashSet<>(List.of(9, 10, 11, 12, 13, 32 ));
-
     @Override
     public ProcessResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
         long lineCount = 0, wordCount = 0, characterCount = 0, byteCount = 0;
@@ -20,7 +15,7 @@ public class SimpleStreamProcessor implements StreamProcessor {
         var byteBuffer = new ByteArrayOutputStream();
 
         while ((currentByte = stream.read()) != -1) {
-            boolean isWhitespaceChar = WhitespaceCharacters.contains(currentByte);
+            boolean isWhitespaceChar = StringUtils.WhitespaceCharacters.contains(currentByte);
             if (isWhitespaceChar) {
                 if (inWord) {
                     wordCount += 1;
@@ -30,7 +25,7 @@ public class SimpleStreamProcessor implements StreamProcessor {
 
             byteBuffer.write(currentByte);
             if (currentByte == 10) {
-                characterCount += getCharacterCount(byteBuffer.toByteArray());
+                characterCount += StringUtils.getUTF8CharacterCount(byteBuffer.toByteArray());
                 lineCount += 1;
                 byteBuffer.reset();
             } else if (!isWhitespaceChar) {
@@ -42,13 +37,9 @@ public class SimpleStreamProcessor implements StreamProcessor {
         if (inWord) {
             wordCount += 1;
         }
-        characterCount += getCharacterCount(byteBuffer.toByteArray());
+        characterCount += StringUtils.getUTF8CharacterCount(byteBuffer.toByteArray());
         byteBuffer.close();
 
         return new ProcessResult(lineCount, wordCount, byteCount, characterCount);
-    }
-
-    private long getCharacterCount(byte[] bytes) {
-        return new String(bytes, StandardCharsets.UTF_8).length();
     }
 }
