@@ -2,3 +2,4 @@ logs/*
 *.class
 out/*
 !out/.gitkeep
+lib/*

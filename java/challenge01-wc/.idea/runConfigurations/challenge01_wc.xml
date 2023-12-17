@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="challenge01-wc" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="openjdk-17" />
     <output_file path="$PROJECT_DIR$/logs/actual.log" is_save="true" />
     <option name="MAIN_CLASS_NAME" value="com.codingchallenges.challenge01.ccwc" />
     <module name="challenge01-wc" />

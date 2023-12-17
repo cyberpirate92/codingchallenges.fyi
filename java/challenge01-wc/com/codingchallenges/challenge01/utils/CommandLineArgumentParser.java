@@ -2,8 +2,7 @@ package com.codingchallenges.challenge01.utils;
 
 import com.codingchallenges.challenge01.models.ParseResult;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 public class CommandLineArgumentParser {
     private static final char FlagPrefix = '-';
@@ -19,20 +18,20 @@ public class CommandLineArgumentParser {
         }
 
         var otherArgs = new ArrayList<String>();
-        var providedFlags = new HashSet<Character>();
+        Map<Character, Integer> providedFlags = new HashMap<>();
 
+        int pos = 1;
         for (var argument : arguments) {
             if (argument.charAt(0) == FlagPrefix) {
                 for (int i = 1; i < argument.length(); i++) {
-                    providedFlags.add(argument.charAt(i));
+                    providedFlags.put(argument.charAt(i), pos++);
                 }
             } else {
                 otherArgs.add(argument);
             }
         }
 
-        providedFlags.retainAll(validFlagSet);
-
+        providedFlags.keySet().retainAll(validFlagSet);
         return new ParseResult(providedFlags, otherArgs);
     }
 

@@ -8,6 +8,7 @@ import com.codingchallenges.challenge01.utils.CommandLineArgumentParser;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.Map;
 
 class ccwc {
 	private static final char[] VALID_FLAGS = new char[] { 'l', 'w', 'm', 'c' };
@@ -15,12 +16,7 @@ class ccwc {
 	public static void main(String[] args) throws IOException {
 		final StreamProcessor streamProcessor = new BufferedByteStreamProcessor();
 		final var parseResult = CommandLineArgumentParser.parseArguments(args, VALID_FLAGS);
-		final var processingOptions = parseResult.flags().isEmpty() ?
-				new ProcessingOptions() :
-				new ProcessingOptions(
-					parseResult.flags().contains('l'), parseResult.flags().contains('w'),
-					parseResult.flags().contains('c'), parseResult.flags().contains('m')
-				);
+		final var processingOptions = generateOptionsFromFlags(parseResult.flags());
 		final String currentWorkingDirectory = System.getProperty("user.dir");
 		final var files = parseResult.otherArguments().stream().map(filename -> {
 			boolean isAbsolutePath = filename.charAt(0) == '/';
@@ -69,16 +65,16 @@ class ccwc {
 
 	private static void printOutput(ProcessingOptions options, StreamProcessingResult result, String filename) {
 		System.out.printf(" ");
-		if (options.lineCount()) {
+		if (options.showLineCount()) {
 			System.out.printf("%7d ", result.lineCount());
 		}
-		if (options.wordCount()) {
+		if (options.showWordCount()) {
 			System.out.printf("%7d ", result.wordCount());
 		}
-		if (options.byteCount()) {
+		if (options.showByteCount()) {
 			System.out.printf("%7d ", result.byteCount());
 		}
-		if (options.characterCount()) {
+		if (options.showCharacterCount()) {
 			System.out.printf("%7d ", result.characterCount());
 		}
 		System.out.printf("%s\n", filename);
@@ -86,5 +82,27 @@ class ccwc {
 
 	private static void printError(String filename, String errorMessage) {
 		System.out.printf("src.main.com.codingchallenges.challenge01.ccwc: %s: %s\n", filename, errorMessage);
+	}
+
+	public static ProcessingOptions generateOptionsFromFlags(Map<Character, Integer> flags) {
+		if (flags.isEmpty()) {
+			return new ProcessingOptions(true, true, true, false);
+		}
+		boolean lineCount = flags.containsKey('l');
+		boolean wordCount = flags.containsKey('w');
+		boolean byteCount = false;
+		boolean characterCount = false;
+
+		if (flags.containsKey('m') && flags.containsKey('c')) {
+			if (flags.get('m') > flags.get('c')) {
+				characterCount = true;
+			} else {
+				byteCount = true;
+			}
+		} else {
+			byteCount = flags.containsKey('c');
+			characterCount = flags.containsKey('m');
+		}
+		return new ProcessingOptions(lineCount, wordCount, byteCount, characterCount);
 	}
 }

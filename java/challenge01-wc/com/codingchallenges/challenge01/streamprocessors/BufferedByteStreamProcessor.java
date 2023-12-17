@@ -20,7 +20,7 @@ public class BufferedByteStreamProcessor implements StreamProcessor {
         boolean inWord = false;
 
         while ((currentByte = bufferedInputStream.read()) != -1) {
-            if (options.characterCount()) {
+            if (options.showCharacterCount()) {
                 int characterByteCount = getByteCount(currentByte);
                 if (characterByteCount > 1) {
                     characterCount += 1;
