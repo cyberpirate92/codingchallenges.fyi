@@ -3,3 +3,4 @@ logs/*
 out/*
 !out/.gitkeep
 lib/*
+test_data/appcat*.txt
