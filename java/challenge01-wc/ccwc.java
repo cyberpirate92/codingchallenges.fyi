@@ -1,13 +1,11 @@
 import java.io.*;
 import java.nio.file.Path;
 
-// line, word, byte, and file name
-
 class ccwc {
 	private static final char[] VALID_FLAGS = new char[] { 'l', 'w', 'm', 'c' };
 
 	public static void main(String[] args) throws IOException {
-		final StreamProcessor streamProcessor = new SimpleStreamProcessor();
+		final StreamProcessor streamProcessor = new ByteBufferedStreamProcessor();
 		final var parseResult = CommandLineArgumentParser.parseArguments(args, VALID_FLAGS);
 		final var processingOptions = parseResult.flags().isEmpty() ?
 				new ProcessingOptions() :

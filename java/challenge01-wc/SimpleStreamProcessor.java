@@ -1,10 +1,6 @@
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class SimpleStreamProcessor implements StreamProcessor {
     @Override
@@ -37,6 +33,7 @@ public class SimpleStreamProcessor implements StreamProcessor {
         if (inWord) {
             wordCount += 1;
         }
+
         characterCount += StringUtils.getUTF8CharacterCount(byteBuffer.toByteArray());
         byteBuffer.close();
 
