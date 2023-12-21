@@ -11,7 +11,7 @@ import java.io.InputStream;
 public class BufferedByteStreamProcessor implements StreamProcessor {
 
     @Override
-    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options) throws IOException {
+    public StreamProcessingResult processStream(InputStream stream, ProcessingOptions options, String providedFilename) throws IOException {
         final int BUFFER_SIZE = 16384;
         var bufferedInputStream = new BufferedInputStream(stream, BUFFER_SIZE);
 
@@ -20,48 +20,37 @@ public class BufferedByteStreamProcessor implements StreamProcessor {
         boolean inWord = false;
 
         while ((currentByte = bufferedInputStream.read()) != -1) {
-            if (options.showCharacterCount()) {
-                int characterByteCount = getByteCount(currentByte);
-                if (characterByteCount > 1) {
-                    characterCount += 1;
-                    byteCount += characterByteCount;
-
-                    // skip bytes as they belong to the same multibyte character
-                    while (characterByteCount-- > 1) {
-                        // TODO: Handle cases where stream ends abruptly due to malformed multibyte characters
-                        bufferedInputStream.read();
-                    }
-
-                    // since all the bytes belong to the same character,
-                    // there's no need for further processing
-                    continue;
-                } else {
-                    characterCount++;
-                }
-            }
-
             boolean isWhitespaceChar = StringUtils.WhitespaceCharacters.contains(currentByte);
             if (isWhitespaceChar) {
                 if (inWord) {
                     wordCount += 1;
                 }
                 inWord = false;
-            }
-
-            if (currentByte == 10) {
-                lineCount += 1;
-            } else if (!isWhitespaceChar) {
+                if (currentByte == 10) {
+                    lineCount += 1;
+                }
+            } else {
                 inWord = true;
             }
 
-            byteCount += 1;
+            if (options.showCharacterCount()) {
+                int characterByteCount = getByteCount(currentByte);
+                byteCount += characterByteCount;
+                if (characterByteCount > 1) {
+                    // skip bytes as they belong to the same multibyte character
+                    bufferedInputStream.skip(characterByteCount - 1);
+                }
+                characterCount++;
+            } else {
+                byteCount += 1;
+            }
         }
 
         if (inWord) {
             wordCount += 1;
         }
 
-        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount);
+        return new StreamProcessingResult(lineCount, wordCount, byteCount, characterCount, providedFilename == null? "" : providedFilename);
     }
 
     /**

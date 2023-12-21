@@ -8,7 +8,13 @@ import com.codingchallenges.challenge01.utils.CommandLineArgumentParser;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 class ccwc {
 	private static final char[] VALID_FLAGS = new char[] { 'l', 'w', 'm', 'c' };
@@ -24,13 +30,15 @@ class ccwc {
 		}).toArray(File[]::new);
 
 		if (files.length == 0) {
-			var result = streamProcessor.processStream(System.in, processingOptions);
+			var result = streamProcessor.processStream(System.in, processingOptions, "");
 			printOutput(processingOptions, result);
 			return;
 		}
 
-		long totalResults = 0;
-		StreamProcessingResult cumulative = new StreamProcessingResult();
+		int maxThreads = Runtime.getRuntime().availableProcessors() * 2;
+		ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
+		List<Future<StreamProcessingResult>> futures = new ArrayList<>();
+
 		for (int i=0; i<files.length; i++) {
 			String providedFilename = parseResult.otherArguments().get(i);
 			final var file = files[i];
@@ -47,23 +55,31 @@ class ccwc {
 			// TODO: Check how binary files are handled
 
 			var fileStream = new FileInputStream(file);
-			var result = streamProcessor.processStream(fileStream, processingOptions);
-			printOutput(processingOptions, result, providedFilename);
-			cumulative = new StreamProcessingResult(cumulative, result);
-			totalResults += 1;
+			Callable<StreamProcessingResult> task = () -> streamProcessor.processStream(fileStream, processingOptions, providedFilename);
+			futures.add(executor.submit(task));
+		}
+
+		long totalResults = 0;
+		StreamProcessingResult cumulative = new StreamProcessingResult();
+		for (var future : futures) {
+			try {
+				var result = future.get();
+				printOutput(processingOptions, result);
+				cumulative = new StreamProcessingResult(cumulative, result, "total");
+				totalResults += 1;
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}
 		}
 
 		if (totalResults > 1) {
-			printOutput(processingOptions, cumulative, "total");
+			printOutput(processingOptions, cumulative);
 		}
-	}
 
+		executor.shutdown();
+	}
 
 	private static void printOutput(ProcessingOptions options, StreamProcessingResult result) {
-		printOutput(options, result, "");
-	}
-
-	private static void printOutput(ProcessingOptions options, StreamProcessingResult result, String filename) {
 		System.out.printf(" ");
 		if (options.showLineCount()) {
 			System.out.printf("%7d ", result.lineCount());
@@ -77,7 +93,7 @@ class ccwc {
 		if (options.showCharacterCount()) {
 			System.out.printf("%7d ", result.characterCount());
 		}
-		System.out.printf("%s\n", filename);
+		System.out.printf("%s\n", result.filename());
 	}
 
 	private static void printError(String filename, String errorMessage) {
